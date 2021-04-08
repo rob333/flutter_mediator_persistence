@@ -1,0 +1,25 @@
+{
+    "app": {
+        "title" : "Board",
+        "~": ""
+    },
+
+    "login": {
+        "login" : "Login",
+        "rememberMe" : "Remember me",
+        "forgotPassword" : "Forgot Password",
+        "password" : "Password",
+        "enterYourPassword" : "Enter your password",
+        "shortPasswordError" : "Password should be more than 3 characters.",
+        "enterYourAccount" : "Account",
+        "invalidAccountError" : "Please enter a valid account.",
+        "accountlNullError" : "Please enter your account.",        
+        "passwordNullError" : "Please enter your password.",
+        "MatchPasswordError" : "Password doesn't match.",
+        "NameNullError" : "Please enter your name.",
+        "PhoneNumberNullError" : "Please enter your phone number.",
+        "AddressNullError" : "Please enter your address.",
+        "signOut" : "Sign out",
+        "~": ""
+    }
+}

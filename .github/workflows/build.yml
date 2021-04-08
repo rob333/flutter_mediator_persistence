@@ -1,0 +1,64 @@
+name: Build
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    # This job will run on ubuntu virtual machine
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        channel:
+          # [dev, beta]
+          - beta
+          ## - stable
+
+    steps:
+      # Setup Java environment in order to build the Android app.
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "12.x"
+          # java-version: ${{ matrix.java }}
+
+      # Setup the flutter environment.
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: beta
+          # channel: ${{ matrix.channel }}
+          # channel: "beta" # 'dev', 'alpha', default to: 'stable'
+          # flutter-version: '1.12.x' # you can also specify exact version of flutter
+
+      - name: Add pub cache bin to PATH
+        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Add pub cache to ENV
+        run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
+
+      # Get flutter dependencies.
+      - run: flutter pub get
+
+      # Get example module dependencies.
+      - run: |
+          cd example && flutter pub get && cd -
+
+      # Check for any formatting issues in the code.
+      - run: flutter format --set-exit-if-changed .
+
+      # Statically analyze the Dart code for any errors.
+      - run: flutter analyze .
+
+      # Run widget tests for our flutter project.
+      # - run: flutter test
+      - run: |
+          cd example && flutter test && cd -
