@@ -7,10 +7,28 @@ var loginToken = '';
 
 const DefaultLocale = 'en';
 //* Declare the persistent watched variable with `defaultVal.globalPersist('key')`
+///    int: 0.globalPersist('intKey');
+/// double: 0.0.globalPersist('doubleKey');
+/// String: ''.globalPersist('StringKey');
+///   bool: false.globalPersist('boolKey');
 final locale = DefaultLocale.globalPersist('locale');
-
-//* Declare the persistent watched variable with `defaultVal.globalPersist('key')`
 final themeIdx = 1.globalPersist('themeIdx');
+
+//* Declare the watched variable with `globalWatch(initialValue)`.
+final touchCount = globalWatch(0, tag: 'tagCount'); // main.dart
+final data = globalWatch(<ListItem>[]); // list_page.dart
+
+class ListItem {
+  const ListItem(
+    this.item,
+    this.units,
+    this.color,
+  );
+
+  final String item;
+  final int units;
+  final Color color;
+}
 
 /// Change the locale, by `String`[countryCode]
 /// and store the setting with SharedPreferences.
@@ -18,6 +36,7 @@ Future<void> changeLocale(BuildContext context, String countryCode) async {
   final loc = Locale(countryCode);
   await FlutterI18n.refresh(context, loc);
   //* Step4: Make an update to the watched variable.
+  //* The persistent watched variable will update the persistent value automatically.
   locale.value = countryCode;
 }
 
@@ -28,6 +47,12 @@ void changeTheme(int idx) {
   if (idx != themeIdx.value) {
     themeIdx.value = idx;
   }
+}
+
+/// Sign out from the REST server and clear the [loginToken].
+void onSignOut(BuildContext context) {
+  loginToken = '';
+  Navigator.of(context).pushReplacementNamed('/');
 }
 
 extension StringI18n on String {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -233,9 +235,18 @@ extension RxExtension<T> on T {
 late SharedPreferences _sharedPreferences;
 bool _isPersistenceInit = false;
 
-/// Initialize the persistent store for the Rx persistent object.
-/// ex. use `await globalPersistInit();` in the `main()` before `runApp()`.
-Future<void> globalPersistInit() async {
+/// Initial the persistent store for the Rx persistent object.
+/// Use `await globalPersistInit();` in the `main()` before `runApp()`.
+/// ex:
+/// ```
+/// Future<void> main() async {
+///   await initGlobalPersist();
+///   runApp(
+///     globalHost(child: MyApp()),
+///   );
+/// }
+/// ```
+Future<void> initGlobalPersist() async {
   if (_isPersistenceInit == false) {
     WidgetsFlutterBinding
         .ensureInitialized(); // To make sure SharedPreferences works.
@@ -244,6 +255,11 @@ Future<void> globalPersistInit() async {
     _isPersistenceInit = true;
   }
 }
+
+/// Get the backend persistent store
+/// Usage: `final prefs = getPersistStore();`
+SharedPreferences getPersistStore() => _sharedPreferences;
+
 //
 
 class RxPersistBase<T> extends RxImpl<T> {
@@ -258,7 +274,10 @@ class RxPersistBase<T> extends RxImpl<T> {
   /// the default value.
   /// ** Won't notify the host to rebuild.
   void remove() {
-    _sharedPreferences.remove(_persistKey);
+    if (_sharedPreferences.containsKey(_persistKey)) {
+      // omit await
+      _sharedPreferences.remove(_persistKey);
+    }
     _value = _defaultValue;
   }
 
@@ -266,7 +285,6 @@ class RxPersistBase<T> extends RxImpl<T> {
   /// and store the value to the persistent store.
   /// ** Won't notify the host to rebuild.
   void store(T input) {
-    // assert(false, 'Please override `storePersist` in the descendant class');
     _value = input;
     _keepPersist();
   }
@@ -396,7 +414,61 @@ extension RxPersistDoubleExtension on double {
   }
 }
 
+/// Rx persistent class for `List<String>` Type.
+class RxPersistStringList extends RxPersistBase<List<String>> {
+  /// Rx persistent class, with the key of [_persistKey].
+  /// Default value to [initial] if the persistent store returns null.
+  RxPersistStringList(String key, List<String> initial)
+      : assert(_isPersistenceInit,
+            'Persistent store did not initialize, please use globalPersistInit() in main()'),
+        // For collections, needs to clone the initial collection to the _default value.
+        super(key, [...initial]) {
+    _value = _sharedPreferences.getStringList(_persistKey) ?? initial;
+  }
 
+  /// Called by the setter of [RxImpl]
+  /// to put the [_value] to the persistent store.
+  @override
+  void _keepPersist() {
+    scheduleMicrotask(() {
+      // omit await
+      _sharedPreferences.setStringList(_persistKey, _value);
+    });
+  }
+
+  /// Override, to enclosure `super.remove` in `scheduleMicrotask`
+  /// to make sure `remove` won't precede `ob.updateMethod`.
+  @override
+  void remove() {
+    scheduleMicrotask(() {
+      // omit await
+      super.remove();
+    });
+  }
+
+  /// Override, to enclosure `super.store` in `scheduleMicrotask`
+  /// to make sure `store` won't precede `ob.updateMethod`.
+  @override
+  void store(List<String> input) {
+    scheduleMicrotask(() {
+      // omit await
+      super.store(input);
+    });
+  }
+}
+
+/// Extension for List<String> type to Rx persistent object.
+extension RxPersistStringListExtension on List<String> {
+  /// Returns a `RxPersistStringList`, persistent with the key: [key].
+  /// Default value to [this] if the persistent store returns null.
+  /// Usage: defaultStringListValue.globalPersist(key)
+  ///       `final watchedVar = <String>[].globalPersist(key)`
+  RxPersistStringList globalPersist(String key) {
+    return RxPersistStringList(key, this);
+  }
+}
+
+// End persistent section
 
 // /// Encode a number into a string
 // String numToString128(int value) {

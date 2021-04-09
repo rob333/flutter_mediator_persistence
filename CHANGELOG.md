@@ -1,3 +1,3 @@
-## 1.0.2+1
+## 1.0.0
 
-- Initial release. Keep the version number up with the Flutter Mediator Lite.
+- Initial release, derived from Flutter Mediator Lite v1.0.2.

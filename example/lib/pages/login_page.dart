@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    'app.title'.ci18n(
+                    'login.title'.ci18n(
                       context,
                       style: Theme.of(context).textTheme.headline2,
                     ),

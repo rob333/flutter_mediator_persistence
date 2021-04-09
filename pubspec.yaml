@@ -1,6 +1,6 @@
 name: flutter_mediator_persistence
-description: A super easy state management package with build in persistence capability, base on the Flutter Mediator Lite.
-version: 1.0.2+1
+description: A super easy state management package with built in persistence capability, base on the Flutter Mediator Lite.
+version: 1.0.0
 homepage: https://github.com/rob333/flutter_mediator_persistence
 
 environment:

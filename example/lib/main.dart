@@ -9,8 +9,8 @@ import 'theme.dart';
 import 'var.dart';
 
 Future<void> main() async {
-  //* Step1: initialize the persistent store.
-  await globalPersistInit();
+  //* Step1: Initial the persistent store.
+  await initGlobalPersist();
 
   runApp(
     //* Step2: Create the host with `globalHost`
