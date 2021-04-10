@@ -135,39 +135,37 @@ void main() {
         expect(globalFrameAspects.length, 1);
       });
 
-      // Disabled, take long time to execute on github action.
-      // TimeoutException after 0:10:00.000000: Test timed out after 10 minutes.
-      // testWidgets('Rx persist StringList test', (WidgetTester tester) async {
-      //   await initGlobalPersist();
-      //   await tester.pumpWidget(
-      //     TouchCntApp(),
-      //   );
+      testWidgets('Rx persist StringList test', (WidgetTester tester) async {
+        await initGlobalPersist();
+        await tester.pumpWidget(
+          TouchCntApp(),
+        );
 
-      //   final origAspectLen = globalAllAspects.length;
+        final origAspectLen = globalAllAspects.length;
 
-      //   const key = 'rxStringListTest';
-      //   final prefs = getPersistStore();
-      //   // Make sure store starts clean.
-      //   if (prefs.containsKey(key)) await prefs.remove(key);
-      //   final i = <String>[].globalPersist(key);
-      //   i.ob.add('value1');
-      //   await tester.pump();
-      //   expect(i.ob.length, 1);
-      //   i.ob.add('value2');
-      //   await tester.pump();
-      //   expect(i.ob.length, 2);
-      //   // Remove the key from store.
-      //   i.remove();
-      //   await tester.pump();
-      //   expect(i.ob.length, 0);
+        const key = 'rxStringListTest';
+        final prefs = getPersistStore();
+        // Make sure store starts clean.
+        if (prefs.containsKey(key)) await prefs.remove(key);
+        final i = <String>[].globalPersist(key);
+        i.ob.add('value1');
+        await tester.pump();
+        expect(i.ob.length, 1);
+        i.ob.add('value2');
+        await tester.pump();
+        expect(i.ob.length, 2);
+        // Remove the key from store.
+        i.remove();
+        await tester.pump();
+        expect(i.ob.length, 0);
 
-      //   await tester.pump();
-      //   // We add a `i` persistent watched variable.
-      //   expect(globalAllAspects.length, origAspectLen + 1);
+        await tester.pump();
+        // We add a `i` persistent watched variable.
+        expect(globalAllAspects.length, origAspectLen + 1);
 
-      //   // We change the `i` persistent watched variable, should notify an aspect.
-      //   expect(globalFrameAspects.length, 1);
-      // });
+        // We change the `i` persistent watched variable, should notify an aspect.
+        expect(globalFrameAspects.length, 1);
+      });
     },
   );
 
