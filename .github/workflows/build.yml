@@ -61,4 +61,4 @@ jobs:
       # Run widget tests for our flutter project.
       # - run: flutter test
       - run: |
-      cd example && flutter test && cd -
+          cd example && flutter test && cd -
