@@ -1,7 +1,9 @@
 {
   "markdown.extension.toc.omittedFromToc": {
     "README.md": [
-      "## Table of Contents"
+      // "# Flutter Mediator Persistence",
+      "## Table of Contents",
+      "### **Note**",
     ]
   }
 }

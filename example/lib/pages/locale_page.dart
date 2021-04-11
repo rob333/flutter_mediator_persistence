@@ -73,11 +73,8 @@ class LocalePanel extends StatelessWidget {
           //* `touch()` itself first and then `globalConsume`.
           locale.consume(() => Text('${'app.hello'.i18n(context)} ')),
           Text('$name, '),
-          //* Step3: Create a widget with `globalConsume` or `watchedVar.consume`
-          //* to register the watched variable to the host to rebuild it when updating.
-          //* `watchedVar.consume()` is a helper function to
-          //* `touch()` itself first and then `globalConsume`.
-          locale.consume(() => Text('${'app.thanks'.i18n(context)}.')),
+          //* Or use the ci18n extension
+          'app.thanks'.ci18n(context),
         ],
       ),
     );

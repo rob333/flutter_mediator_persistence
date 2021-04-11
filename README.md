@@ -64,7 +64,7 @@
 
 <br>
 
-Flutter Mediator Persistence is a super easy state management package with built in persistence capability, base on the [Flutter Mediator Lite][lite].
+Flutter Mediator Persistence is a super easy state management package with built in persistence capability, using SharedPreference as persistent storage, [InheritedModel][] as the state management mechanism, and base on the works of [Flutter Mediator Lite][lite].
 
 <!--
 <table border="0" align="center">
@@ -83,28 +83,30 @@ Flutter Mediator Persistence is a super easy state management package with built
 
 ## Table of Contents
 
-- [Setting up](#setting-up)
-- [Steps](#steps)
-  - [Case 1: Int](#case-1-int)
-  - [Case 2: List](#case-2-list)
-  - [Case 3: Locale setting with Built in Persistence](#case-3-locale-setting-with-built-in-persistence)
-  - [Case 4: Scrolling effect](#case-4-scrolling-effect)
-- [Recap](#recap)
-- [Global Get](#global-get)
-  - [Case 1: By `Type`](#case-1-by-type)
-  - [Case 2: By `tag`](#case-2-by-tag)
-- [Global Broadcast](#global-broadcast)
-- [Persistence](#persistence)
-  - [`defaultVal.globalPersist('key')`](#defaultvalglobalpersistkey)
-  - [`await initGlobalPersis()`](#await-initglobalpersis)
-  - [`getPersistStore()`](#getpersiststore)
-  - [`persistVar.remove()`](#persistvarremove)
-  - [`persistVar.store(input)`](#persistvarstoreinput)
-- [Versions](#versions)
-- [Example: Logins to a REST server](#example-logins-to-a-rest-server)
-- [Flutter Widget of the Week: InheritedModel explained](#flutter-widget-of-the-week-inheritedmodel-explained)
-- [Changelog](#changelog)
-- [License](#license)
+- [Flutter Mediator Persistence](#flutter-mediator-persistence)
+  - [Setting up](#setting-up)
+  - [Steps](#steps)
+    - [Case 1: Int](#case-1-int)
+    - [Case 2: List](#case-2-list)
+    - [Case 3: Locale setting with Built in Persistence](#case-3-locale-setting-with-built-in-persistence)
+    - [Case 4: Scrolling effect](#case-4-scrolling-effect)
+  - [Recap](#recap)
+  - [Persistence](#persistence)
+    - [`await initGlobalPersist()`](#await-initglobalpersist)
+    - [`defaultVal.globalPersist('key')`](#defaultvalglobalpersistkey)
+    - [`initGlobal(widget)`](#initglobalwidget)
+    - [`getPersistStore()`](#getpersiststore)
+    - [`persistVar.remove()`](#persistvarremove)
+    - [`persistVar.store(input)`](#persistvarstoreinput)
+  - [Global Get](#global-get)
+    - [Case 1: By `Type`](#case-1-by-type)
+    - [Case 2: By `tag`](#case-2-by-tag)
+  - [Global Broadcast](#global-broadcast)
+  - [Versions](#versions)
+  - [Example: Logins to a REST server](#example-logins-to-a-rest-server)
+  - [Flutter Widget of the Week: InheritedModel explained](#flutter-widget-of-the-week-inheritedmodel-explained)
+  - [Changelog](#changelog)
+  - [License](#license)
 
 <hr>
 
@@ -114,7 +116,7 @@ Add the following dependency to pubspec.yaml of your flutter project:
 
 ```yaml
 dependencies:
-  flutter_mediator_persistence: "^1.0.0"
+  flutter_mediator_persistence: "^1.0.1"
 ```
 
 Import flutter_mediator_persistence in files that will be used:
@@ -133,9 +135,9 @@ For help getting started with Flutter, view the online [documentation](https://f
    Declare the persistent wathced variable with `defaultVal.globalPersist('key')`<br>
    **Suggest to put the watched variables into a file [var.dart][example/lib/var.dart] and then import it.**
 
-2. Initial the persistent store with `await initGlobalPersist();` and create the host with `globalHost(child: MyApp())` at the top of the widget tree.
+2. Initial the persistent storage with `await initGlobalPersist();` and create the host with `globalHost(child: MyApp())` at the top of the widget tree.
 
-3. Create a widget with `globalConsume` or `watchedVar.consume` to register the watched variable to the host to rebuild it when updating.
+3. Create a consume widget with `globalConsume` or `watchedVar.consume` to register the watched variable to the host to rebuild it when updating.
 
 4. Make an update to the watched variable, by `watchedVar.value` or `watchedVar.ob.updateMethod(...)`.
 
@@ -143,11 +145,11 @@ For help getting started with Flutter, view the online [documentation](https://f
 
 ### Case 1: Int
 
-Step 1: [var.dart][example/lib/var.dart]
+Step 1: Declare variable in [var.dart][example/lib/var.dart].
 
 ```dart
 const DefaultLocale = 'en';
-//* Declare the persistent watched variable with `defaultVal.globalPersist('key')`
+//* Declare a persistent watched variable with `defaultVal.globalPersist('key')`
 ///    int: 0.globalPersist('intKey');
 /// double: 0.0.globalPersist('doubleKey');
 /// String: ''.globalPersist('StringKey');
@@ -159,24 +161,22 @@ final themeIdx = 1.globalPersist('themeIdx');
 final touchCount = globalWatch(0);
 ```
 
-Step 2: [main.dart][example/lib/main.dart]
+Step 2: Initialization in [main.dart][example/lib/main.dart].
 
 ```dart
 Future<void> main() async {
-  //* Step2: Initial the persistent store.
+  //* Step2: Initial the persistent storage.
   await initGlobalPersist();
 
   runApp(
     //* Step2: Create the host with `globalHost`
     //* at the top of the widget tree.
-    globalHost(
-      child: MyApp(),
-    ),
+    globalHost(child: MyApp())
   );
 }
 ```
 
-Step 3: [example/lib/pages/home_page.dart][]
+Step 3: Create consume widget in [example/lib/pages/home_page.dart][].
 
 ```dart
 Scaffold(
@@ -196,7 +196,7 @@ Scaffold(
    // ...
 ```
 
-Step 4: [example/lib/pages/home_page.dart][]
+Step 4: Implement update function in [example/lib/pages/home_page.dart][].
 
 ```dart
 FloatingActionButton(
@@ -214,7 +214,7 @@ FloatingActionButton(
 
 [example/lib/pages/list_page.dart][]
 
-Step 1: [var.dart][example/lib/var.dart]
+Step 1: Declare variable in [var.dart][example/lib/var.dart].
 
 ```dart
 //* Step1: Declare the watched variable with `globalWatch` in the var.dart.
@@ -222,7 +222,7 @@ Step 1: [var.dart][example/lib/var.dart]
 final data = globalWatch(<ListItem>[]);
 ```
 
-Step 3:
+Step 3: Create consume widget.
 
 ```dart
 return Scaffold(
@@ -236,7 +236,7 @@ return Scaffold(
     // ...
 ```
 
-Step 4:
+Step 4: Implement update function.
 
 ```dart
 void updateListItem() {
@@ -252,11 +252,11 @@ void updateListItem() {
 
 ### Case 3: Locale setting with Built in Persistence
 
-Step 1: [var.dart][example/lib/var.dart]
+Step 1: Declare variable in [var.dart][example/lib/var.dart].
 
 ```dart
 const DefaultLocale = 'en';
-//* Declare the persistent watched variable with `defaultVal.globalPersist('key')`
+//* Declare a persistent watched variable with `defaultVal.globalPersist('key')`
 ///    int: 0.globalPersist('intKey');
 /// double: 0.0.globalPersist('doubleKey');
 /// String: ''.globalPersist('StringKey');
@@ -265,11 +265,11 @@ final locale = DefaultLocale.globalPersist('locale');
 final themeIdx = 1.globalPersist('themeIdx');
 ```
 
-Step 2-1: [main.dart][example/lib/main.dart]
+Step 2-1: Initialization in [main.dart][example/lib/main.dart].
 
 ```dart
 Future<void> main() async {
-  //* Initial the persistent store.
+  //* Initial the persistent storage.
   await initGlobalPersist();
 
   runApp(
@@ -279,7 +279,7 @@ Future<void> main() async {
 }
 ```
 
-Step 2-2: [main.dart][example/lib/main.dart]
+Step 2-2: Initial i18n in [main.dart][example/lib/main.dart].
 
 ```dart
 //* Initialize the locale with the persistent value.
@@ -295,7 +295,17 @@ localizationsDelegates: [
 ],
 ```
 
-Step 3: [example/lib/pages/locale_page.dart][]
+Step 2-3: add assets in [pubspec.yaml][] and prepare locale files in the [folder][flutter_i18n]
+
+```yaml
+flutter:
+  # ...
+  assets:
+    - assets/images/
+    - assets/flutter_i18n/
+```
+
+Step 3: Create consume widget in [example/lib/pages/locale_page.dart][].
 
 ```dart
 return SizedBox(
@@ -307,22 +317,25 @@ return SizedBox(
       //* `touch()` itself first and then `globalConsume`.
       locale.consume(() => Text('${'app.hello'.i18n(context)} ')),
       Text('$name, '),
-
+      //* Or use the ci18n extension
+      'app.thanks'.ci18n(context),
       // ...
     ],
   ),
 );
 ```
 
-Step 4: [var.dart][example/lib/var.dart]
+Step 4: Implement update function in [var.dart][example/lib/var.dart].
 
 ```dart
 Future<void> changeLocale(BuildContext context, String countryCode) async {
-  final loc = Locale(countryCode);
-  await FlutterI18n.refresh(context, loc);
-  //* Step4: Make an update to the watched variable.
-  //* The persistent watched variable will update the persistent value automatically.
-  locale.value = countryCode;
+  if (countryCode != locale.value) {
+    final loc = Locale(countryCode);
+    await FlutterI18n.refresh(context, loc);
+    //* Step4: Make an update to the watched variable.
+    //* The persistent watched variable will update the persistent value automatically.
+    locale.value = countryCode; // will rebuild the registered widget
+  }
 }
 ```
 
@@ -332,14 +345,14 @@ Future<void> changeLocale(BuildContext context, String countryCode) async {
 
 [example/lib/pages/scroll_page.dart][]
 
-Step 1:
+Step 1: Declare variable.
 
 ```dart
-//* Declare the persistent watched variable with `defaultVal.globalPersist('key')`
+//* Declare a persistent watched variable with `defaultVal.globalPersist('key')`
 final scrollOffset = 0.0.globalPersist('ScrollOffsetDemo');
 ```
 
-Step 3:
+Step 3: Create cousume widget.
 
 ```dart
 class CustomAppBar extends StatelessWidget {
@@ -358,7 +371,7 @@ class CustomAppBar extends StatelessWidget {
 }
 ```
 
-Step 4:
+Step 4: Initialize the initial offset and add an offset listener.
 
 ```dart
 class _ScrollPageState extends State<ScrollPage> {
@@ -381,7 +394,9 @@ class _ScrollPageState extends State<ScrollPage> {
 ## Recap
 
 - At step 1, `globalWatch(variable)` creates a watched variable from the variable. <br>
-  Declare the persistent watched variable with `defaultVal.globalPersist('key')`
+  Declare a persistent watched variable with `defaultVal.globalPersist('key')`.
+
+  Support types are `int`, `double`, `String`, and `bool`.
 
 ```dart
 ///    int: 0.globalPersist('intKey');
@@ -391,14 +406,104 @@ class _ScrollPageState extends State<ScrollPage> {
 ```
 
 - At step 3, create a widget and register it to the host to rebuild it when updating,
-  <br> use `globalConsume(() => widget)` if the value of the watched variable is used inside the widget;
-  <br>or use `watchedVar.consume(() => widget)` to `touch()` the watched variable itself first and then `globalConsume(() => widget)`.
+  <br> use **`globalConsume(() => widget)`** **if the value of the watched variable is used inside the widget**;
+  <br>or use **`watchedVar.consume(() => widget)`** to `touch()` the watched variable itself first and then `globalConsume(() => widget)`.
 
 - At step 4, update to the `watchedVar.value` will notify the host to rebuild; or the underlying object would be a class, then use `watchedVar.ob.updateMethod(...)` to notify the host to rebuild. <br>**`watchedVar.ob = watchedVar.notify() and then return the underlying object`.**
 
 &emsp; [Table of Contents]
 
+## Persistence
+
+### `await initGlobalPersist()`
+
+Initial the persistent storage.
+
+Use `await initGlobalPersist();` in the `main()` before `runApp()`.
+
+ex.
+
+```dart
+Future<void> main() async {
+  //* Initial the persistent storage.
+  await initGlobalPersist();
+
+  runApp(
+    //* Create the host with `globalHost` at the top of the widget tree.
+    globalHost(child: MyApp())
+  );
+}
+```
+
+### `defaultVal.globalPersist('key')`
+
+Create a persistent watched variable. Support types are `int`, `double`, `String`, and `bool`.
+
+ex.
+
+```dart
+///    int: 0.globalPersist('intKey');
+/// double: 0.0.globalPersist('doubleKey');
+/// String: ''.globalPersist('StringKey');
+///   bool: false.globalPersist('boolKey');
+/// ex:
+const DefaultLocale = 'en';
+final locale = DefaultLocale.globalPersist('locale');
+final themeIdx = 1.globalPersist('themeIdx');
+```
+
+### `initGlobal(widget)`
+
+Initial the most common case `main()`,
+with the `[child]` widget, e.g.
+
+```dart
+await initGlobal(MyApp())
+```
+
+is the equivalent to
+
+```dart
+await initGlobalPersist();
+runApp(globalHost(child: MyApp()));
+```
+
+ex.
+
+```dart
+Future<void> main() async {
+  await initGlobal(MyApp());
+}
+```
+
+### `getPersistStore()`
+
+Return the backend persistent storage, a `SharedPreferences` instance.
+
+ex.
+
+```dart
+final prefs = getPersistStore();`
+```
+
+### `persistVar.remove()`
+
+Remove the key/value of the persistent watched variable from
+the persistent storage, and set it's value to the default.
+
+**Won't notify the host to rebuild.**
+
+### `persistVar.store(input)`
+
+Store the `input` to the persistent watched variable.
+
+**Won't notify the host to rebuild.**
+
+&emsp; [Table of Contents]
+
 ## Global Get
+
+> Note: Suggest to put the watched variables into a file [var.dart][example/lib/var.dart] and then import it.
 
 `globalGet<T>({Object? tag})` to retrieve the watched variable from another file.
 
@@ -474,70 +579,14 @@ class LocalePage extends StatelessWidget {
 
 - **When using `Type` to retrieve the watched variable, only the first one of the `Type` is returned.**
 
-> Or put the watched variables into a file and then import it.
-
 &emsp; [Table of Contents]
 
 ## Global Broadcast
 
-- `globalBroadcast()`, to broadcast to all the globalConsume widgets.
-- `globalConsumeAll(Widget Function() create, {Key? key})`, to create a widget which will be rebuilt whenever any watched variables changes are made.
+- `globalBroadcast()`, to broadcast to all the consume widgets.
+- `globalConsumeAll(Widget Function() create, {Key? key})`, to create a consume widget which will be rebuilt whenever any watched variables changes are made.
 - `globalFrameAspects`, a getter, to return the updated aspects.
 - `globalAllAspects`, a getter, to return all the aspects that has been registered.
-
-&emsp; [Table of Contents]
-
-## Persistence
-
-### `defaultVal.globalPersist('key')`
-
-Create a persistent watched variable. Type of `int`, `double`, `String`, and `bool` are supported.
-
-```dart
-///    int: 0.globalPersist('intKey');
-/// double: 0.0.globalPersist('doubleKey');
-/// String: ''.globalPersist('StringKey');
-///   bool: false.globalPersist('boolKey');
-/// ex:
-const DefaultLocale = 'en';
-final locale = DefaultLocale.globalPersist('locale');
-final themeIdx = 1.globalPersist('themeIdx');
-```
-
-### `await initGlobalPersis()`
-
-Initial the persistent store in the `main()` before `runApp()`.
-
-```dart
-Future<void> main() async {
-  //* Initial the persistent store.
-  await initGlobalPersist();
-
-  runApp(
-    //* Create the host with `globalHost` at the top of the widget tree.
-    globalHost(child: MyApp())
-  );
-}
-```
-
-### `getPersistStore()`
-
-Get the backend persistent store, a `SharedPreferences`.
-
-```dart
-final prefs = getPersistStore();`
-```
-
-### `persistVar.remove()`
-
-Remove the persistent key/value from the persistent store, and set the value of the persistVar to the default value.<br>
-**Won't notify the host to rebuild.**
-
-### `persistVar.store(input)`
-
-Store the `input` value to the persistVar.
-
-**Won't notify the host to rebuild.**
 
 &emsp; [Table of Contents]
 
@@ -571,6 +620,8 @@ Please see the [login to a REST server example][loginrestexample] for details.
 [example/lib/pages/locale_page.dart]: https://github.com/rob333/flutter_mediator_persistence/blob/main/example/lib/pages/locale_page.dart
 [example/lib/pages/scroll_page.dart]: https://github.com/rob333/flutter_mediator_persistence/blob/main/example/lib/pages/scroll_page.dart
 [loginrestexample]: https://github.com/rob333/Flutter-logins-to-a-REST-server-with-i18n-theming-persistence-and-state-management
+[pubspec.yaml]: https://github.com/rob333/flutter_mediator_persistence/blob/main/example/pubspec.yaml
+[flutter_i18n]: https://github.com/rob333/flutter_mediator_persistence/tree/main/example/assets/flutter_i18n
 
 ## Flutter Widget of the Week: InheritedModel explained
 

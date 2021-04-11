@@ -6,7 +6,7 @@ import 'host.dart';
 import 'rx/rx_impl.dart';
 import 'subscriber.dart';
 
-/// Memory the watched variables, retrieved by [globalGet].
+/// Memory the watched variables, retrieved by `globalGet`.
 final _globalWatchedVar = HashMap<Object, Object>();
 
 /// Create a watched variable from the variable [v],
@@ -65,25 +65,61 @@ Rx globalGet<T>({Object? tag}) {
   return _globalWatchedVar[tag] as Rx;
 }
 
-/// A helper function to create a widget for the watched variable,
-/// and register it to the host to rebuild the widget when updating.
+/// Create a comsume widget for the watched variable
+/// whose **value is used inside the widget**, and register it
+/// to the host to rebuild it when updating the watched variable.
+///
+/// If the value of the watched variable is not used inside the widget,
+/// then use `watchedVar.consume` to create the consume widget to notify
+/// the host to rebuild when updating.
 SubscriberAuto globalConsume(Widget Function() create, {Key? key}) {
   return SubscriberAuto(key: key, create: create);
 }
 
-/// Broadcast to all the [globalConsume] widgets.
+/// Broadcast to all the consume widgets.
 void globalBroadcast() => globalPublish();
 
-/// Create a widget that will be rebuilt whenever any watched variables
-/// changes are made.
+/// Create a consume widget that will be rebuilt whenever
+/// any watched variables changes are made.
 Subscriber globalConsumeAll(Widget Function() create, {Key? key}) {
   return Subscriber(key: key, create: create);
 }
 
-/// [globalHost] : Create a [InheritedModel] To register the [Host] at
-/// the top of the widget tree.
+/// Create a [InheritedModel] widget to listen to the watched variables
+/// and rebuild related consume widgets when updating the watched variable.
+///
+/// Place at the top of the widget tree.
 Widget globalHost({
   required Widget child,
 }) {
   return Host(child: child);
+}
+
+/// Initial the most common case `main()`,
+/// with the `[child]` widget, e.g.
+///
+/// ```dart
+/// await initGlobal(MyApp())
+/// ```
+///  is the equivalent to
+///
+/// ```dart
+/// await initGlobalPersist();
+/// runApp(globalHost(child: MyApp()));
+/// ```
+///
+/// ex.
+/// ```dart
+/// Future<void> main() async {
+///  await initGlobal(MyApp());
+/// }
+/// ```
+Future<void> initGlobal(Widget child) async {
+  //* Initial the persistent storage.
+  await initGlobalPersist();
+
+  runApp(
+    //* Create the host with `globalHost` at the top of the widget tree.
+    globalHost(child: child),
+  );
 }

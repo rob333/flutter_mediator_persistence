@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mediator_persistence/mediator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'list_test.dart';
-import 'touch_cnt.dart';
+import '../example/test/list_test.dart';
+import '../example/test/touch_cnt.dart';
 
 void main() {
   group(

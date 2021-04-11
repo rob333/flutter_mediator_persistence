@@ -9,16 +9,14 @@ import 'theme.dart';
 import 'var.dart';
 
 Future<void> main() async {
-  //* Step1: Initial the persistent store.
-  await initGlobalPersist();
+  // //* Step2: Initial the persistent storage.
+  // await initGlobalPersist();
 
-  runApp(
-    //* Step2: Create the host with `globalHost`
-    //* at the top of the widget tree.
-    globalHost(
-      child: MyApp(),
-    ),
-  );
+  // runApp(
+  //     //* Step2: Create the host with `globalHost`
+  //     //* at the top of the widget tree.
+  //     globalHost(child: MyApp()));
+  await initGlobal(MyApp());
 }
 
 class MyApp extends StatelessWidget {

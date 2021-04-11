@@ -6,7 +6,7 @@ import 'package:flutter_mediator_persistence/mediator.dart';
 var loginToken = '';
 
 const DefaultLocale = 'en';
-//* Declare the persistent watched variable with `defaultVal.globalPersist('key')`
+//* Declare a persistent watched variable with `defaultVal.globalPersist('key')`
 ///    int: 0.globalPersist('intKey');
 /// double: 0.0.globalPersist('doubleKey');
 /// String: ''.globalPersist('StringKey');
@@ -31,21 +31,21 @@ class ListItem {
 }
 
 /// Change the locale, by `String`[countryCode]
-/// and store the setting with SharedPreferences.
 Future<void> changeLocale(BuildContext context, String countryCode) async {
-  final loc = Locale(countryCode);
-  await FlutterI18n.refresh(context, loc);
-  //* Step4: Make an update to the watched variable.
-  //* The persistent watched variable will update the persistent value automatically.
-  locale.value = countryCode;
+  if (countryCode != locale.value) {
+    final loc = Locale(countryCode);
+    await FlutterI18n.refresh(context, loc);
+    //* Step4: Make an update to the watched variable.
+    //* The persistent watched variable will update the persistent value automatically.
+    locale.value = countryCode; // will rebuild the registered widget
+  }
 }
 
 /// Change the theme, by ThememData `int` [idx]
-/// and store the setting with SharedPreferences.
 void changeTheme(int idx) {
   idx = idx.clamp(0, 1);
   if (idx != themeIdx.value) {
-    themeIdx.value = idx;
+    themeIdx.value = idx; // will rebuild the registered widget
   }
 }
 
@@ -61,7 +61,8 @@ extension StringI18n on String {
     return FlutterI18n.translate(context, this);
   }
 
-  /// String extension for i18n and `locale.consume` the widget.
+  /// String extension for i18n and `locale.consume` the widget
+  /// to register the widget for the state management.
   Widget ci18n(BuildContext context, {TextStyle? style}) {
     return locale.consume(
       () => Text(FlutterI18n.translate(context, this), style: style),

@@ -104,11 +104,14 @@ class RxImpl<T> {
   /// to let the descendent class to implement the persistent function.
   void _keepPersist() {}
 
-  /// Notify the host to rebuild and then return the underlying object.
-  /// Suitable for class type _value, like List, Map, Set, classes
-  /// To inform the value to update.
-  /// Like if the value type is a List, you can do `var.ob.add(1)` to notify the host to rebuild.
-  /// Or, you can manually notify the host to rebuild by `var.value.add(1); var.notify();`.
+  /// Notify the host to rebuild related consume widget and then return
+  /// the underlying object.
+  ///
+  /// Suitable for class type [_value], like List, Map, Set, and class.
+  ///
+  /// ex. var is a int List: `<int>[]`,
+  ///
+  ///     var.ob.add(1); // to notify the host to rebuild related consume widget.
   T get ob {
     publishRxAspects();
     _keepPersist();
@@ -230,19 +233,21 @@ extension RxExtension<T> on T {
 }
 
 ///
-/// Persistent variables ///
+/// Persistent section ///
 ///
 late SharedPreferences _sharedPreferences;
 bool _isPersistenceInit = false;
 
-/// Initial the persistent store for the Rx persistent object.
-/// Use `await globalPersistInit();` in the `main()` before `runApp()`.
-/// ex:
-/// ```
+/// Initial the persistent storage.
+///
+/// Use `await initGlobalPersist();` in the `main()` before `runApp()`.
+///
+/// ex.
+/// ```dart
 /// Future<void> main() async {
 ///   await initGlobalPersist();
 ///   runApp(
-///     globalHost(child: MyApp()),
+///     globalHost(child: MyApp())
 ///   );
 /// }
 /// ```
@@ -256,8 +261,9 @@ Future<void> initGlobalPersist() async {
   }
 }
 
-/// Get the backend persistent store
-/// Usage: `final prefs = getPersistStore();`
+/// Return the backend persistent storage, a `SharedPreferences` instance.
+///
+/// ex. `final prefs = getPersistStore();`
 SharedPreferences getPersistStore() => _sharedPreferences;
 
 //
@@ -265,14 +271,14 @@ SharedPreferences getPersistStore() => _sharedPreferences;
 class RxPersistBase<T> extends RxImpl<T> {
   RxPersistBase(this._persistKey, this._defaultValue) : super(_defaultValue);
 
-  /// The key for the persistent store of this Rx persistent object.
+  /// The key for the persistent storage of this Rx persistent object.
   final String _persistKey;
   final T _defaultValue;
 
-  /// Remove the value from the persistent store with the key
-  /// of this Rx persistent object and reset it's [_value] to
-  /// the default value.
-  /// ** Won't notify the host to rebuild.
+  /// Remove the key/value of the persistent watched variable from
+  /// the persistent storage, and set it's value to the default.
+  ///
+  /// **Won't notify the host to rebuild.**
   void remove() {
     if (_sharedPreferences.containsKey(_persistKey)) {
       // omit await
@@ -281,9 +287,9 @@ class RxPersistBase<T> extends RxImpl<T> {
     _value = _defaultValue;
   }
 
-  /// Update the [_value] with [input] of this Rx persistent object
-  /// and store the value to the persistent store.
-  /// ** Won't notify the host to rebuild.
+  /// Store the [input] to the persistent watched variable.
+  ///
+  /// **Won't notify the host to rebuild.**
   void store(T input) {
     _value = input;
     _keepPersist();
@@ -292,17 +298,18 @@ class RxPersistBase<T> extends RxImpl<T> {
 
 /// Rx persistent class for `bool` Type.
 class RxPersistBool extends RxPersistBase<bool> {
-  /// Rx persistent class, with the key of [_persistKey].
-  /// Default value to [initial] if the persistent store returns null.
+  /// Rx persistent class, with the persistent key of [_persistKey].
+  ///
+  /// Default value to [initial] if the persistent storage returns null.
   RxPersistBool(String key, [bool initial = false])
       : assert(_isPersistenceInit,
-            'Persistent store did not initialize, please use globalPersistInit() in main()'),
+            'Persistent storage did not initialize, please use initGlobalPersist() in main()'),
         super(key, initial) {
     _value = _sharedPreferences.getBool(_persistKey) ?? initial;
   }
 
   /// Called by the setter of [RxImpl]
-  /// to put the [_value] to the persistent store.
+  /// to put the [_value] to the persistent storage.
   @override
   void _keepPersist() {
     // omit await
@@ -310,12 +317,17 @@ class RxPersistBool extends RxPersistBase<bool> {
   }
 }
 
-/// Extension for bool type to Rx persistent object.
+/// Extension for bool type to Rx persistent class.
 extension RxPersistBoolExtension on bool {
-  /// Returns a `RxPersistBool`, persistent with the key: [key].
-  /// Default value to [this] if the persistent store returns null.
+  /// Returns a `RxPersistBool`, with the persistent key of [key].
+  ///
+  /// Default value to [this] if the persistent storage returns null.
+  ///
   /// Usage: defaultBoolValue.globalPersist(key)
-  ///       `final watchedVar = 0.globalPersist(key)`
+  ///
+  /// ex.
+  ///
+  ///     final persistVar = false.globalPersist(key);
   RxPersistBool globalPersist(String key) {
     return RxPersistBool(key, this);
   }
@@ -323,17 +335,18 @@ extension RxPersistBoolExtension on bool {
 
 /// Rx persistent class for `String` Type.
 class RxPersistString extends RxPersistBase<String> {
-  /// Rx persistent class, with the key of [_persistKey].
-  /// Default value to [initial] if the persistent store returns null.
+  /// Rx persistent class, with the persistent key of [_persistKey].
+  ///
+  /// Default value to [initial] if the persistent storage returns null.
   RxPersistString(String key, [String initial = ''])
       : assert(_isPersistenceInit,
-            'Persistent store did not initialize, please use globalPersistInit() in main()'),
+            'Persistent storage did not initialize, please use initGlobalPersist() in main()'),
         super(key, initial) {
     _value = _sharedPreferences.getString(_persistKey) ?? initial;
   }
 
   /// Called by the setter of [RxImpl]
-  /// to put the [_value] to the persistent store.
+  /// to put the [_value] to the persistent storage.
   @override
   void _keepPersist() {
     // omit await
@@ -341,12 +354,17 @@ class RxPersistString extends RxPersistBase<String> {
   }
 }
 
-/// Extension for String type to Rx persistent object.
+/// Extension for String type to Rx persistent class.
 extension RxPersistStringExtension on String {
-  /// Returns a `RxPersistString`, persistent with the key: [key].
-  /// Default value to [this] if the persistent store returns null.
+  /// Returns a `RxPersistString`, with the persistent key of [key].
+  ///
+  /// Default value to [this] if the persistent storage returns null.
+  ///
   /// Usage: defaultStringValue.globalPersist(key)
-  ///       `final watchedVar = ''.globalPersist(key)`
+  ///
+  /// ex.
+  ///
+  ///     final persistVar = ''.globalPersist(key);
   RxPersistString globalPersist(String key) {
     return RxPersistString(key, this);
   }
@@ -354,17 +372,18 @@ extension RxPersistStringExtension on String {
 
 /// Rx persistent class for `int` Type.
 class RxPersistInt extends RxPersistBase<int> {
-  /// Rx persistent class, with the key of [_persistKey].
-  /// Default value to [initial] if the persistent store returns null.
+  /// Rx persistent class, with the persistent key of [_persistKey].
+  ///
+  /// Default value to [initial] if the persistent storage returns null.
   RxPersistInt(String key, [int initial = 0])
       : assert(_isPersistenceInit,
-            'Persistent store did not initialize, please use globalPersistInit() in main()'),
+            'Persistent storage did not initialize, please use initGlobalPersist() in main()'),
         super(key, initial) {
     _value = _sharedPreferences.getInt(_persistKey) ?? initial;
   }
 
   /// Called by the setter of [RxImpl]
-  /// to put the [_value] to the persistent store.
+  /// to put the [_value] to the persistent storage.
   @override
   void _keepPersist() {
     // omit await
@@ -372,12 +391,17 @@ class RxPersistInt extends RxPersistBase<int> {
   }
 }
 
-/// Extension for int type to Rx persistent object.
+/// Extension for int type to Rx persistent class.
 extension RxPersistIntExtension on int {
-  /// Returns a `RxPersistInt`, persistent with the key: [key].
-  /// Default value to [this] if the persistent store returns null.
+  /// Returns a `RxPersistInt`, with the persistent key of [key].
+  ///
+  /// Default value to [this] if the persistent storage returns null.
+  ///
   /// Usage: defaultIntValue.globalPersist(key)
-  ///       `final watchedVar = 0.globalPersist(key)`
+  ///
+  /// ex.
+  ///
+  ///     final persistVar = 0.globalPersist(key);
   RxPersistInt globalPersist(String key) {
     return RxPersistInt(key, this);
   }
@@ -385,17 +409,18 @@ extension RxPersistIntExtension on int {
 
 /// Rx persistent class for `double` Type.
 class RxPersistDouble extends RxPersistBase<double> {
-  /// Rx persistent class, with the key of [_persistKey].
-  /// Default value to [initial] if the persistent store returns null.
+  /// Rx persistent class, with the persistent key of [_persistKey].
+  ///
+  /// Default value to [initial] if the persistent storage returns null.
   RxPersistDouble(String key, [double initial = 0.0])
       : assert(_isPersistenceInit,
-            'Persistent store did not initialize, please use globalPersistInit() in main()'),
+            'Persistent storage did not initialize, please use initGlobalPersist() in main()'),
         super(key, initial) {
     _value = _sharedPreferences.getDouble(_persistKey) ?? initial;
   }
 
   /// Called by the setter of [RxImpl]
-  /// to put the [_value] to the persistent store.
+  /// to put the [_value] to the persistent storage.
   @override
   void _keepPersist() {
     // omit await
@@ -403,12 +428,17 @@ class RxPersistDouble extends RxPersistBase<double> {
   }
 }
 
-/// Extension for double type to Rx persistent object.
+/// Extension for double type to Rx persistent class.
 extension RxPersistDoubleExtension on double {
-  /// Returns a `RxPersistDouble`, persistent with the key: [key].
-  /// Default value to [this] if the persistent store returns null.
+  /// Returns a `RxPersistDouble`, with the persistent key of [key].
+  ///
+  /// Default value to [this] if the persistent storage returns null.
+  ///
   /// Usage: defaultDoubleValue.globalPersist(key)
-  ///       `final watchedVar = 0.0.globalPersist(key)`
+  ///
+  /// ex.
+  ///
+  ///     final persistVar = 0.0.globalPersist(key);
   RxPersistDouble globalPersist(String key) {
     return RxPersistDouble(key, this);
   }
@@ -416,18 +446,19 @@ extension RxPersistDoubleExtension on double {
 
 /// Rx persistent class for `List<String>` Type.
 class RxPersistStringList extends RxPersistBase<List<String>> {
-  /// Rx persistent class, with the key of [_persistKey].
-  /// Default value to [initial] if the persistent store returns null.
+  /// Rx persistent class, with the persistent key of [_persistKey].
+  ///
+  /// Default value to [initial] if the persistent storage returns null.
   RxPersistStringList(String key, List<String> initial)
       : assert(_isPersistenceInit,
-            'Persistent store did not initialize, please use globalPersistInit() in main()'),
+            'Persistent storage did not initialize, please use initGlobalPersist() in main()'),
         // For collections, needs to clone the initial collection to the _default value.
         super(key, [...initial]) {
     _value = _sharedPreferences.getStringList(_persistKey) ?? initial;
   }
 
   /// Called by the setter of [RxImpl]
-  /// to put the [_value] to the persistent store.
+  /// to put the [_value] to the persistent storage.
   @override
   void _keepPersist() {
     scheduleMicrotask(() {
@@ -457,18 +488,23 @@ class RxPersistStringList extends RxPersistBase<List<String>> {
   }
 }
 
-/// Extension for List<String> type to Rx persistent object.
+/// Extension for List<String> type to Rx persistent class.
 extension RxPersistStringListExtension on List<String> {
-  /// Returns a `RxPersistStringList`, persistent with the key: [key].
-  /// Default value to [this] if the persistent store returns null.
+  /// Returns a `RxPersistStringList`, with the persistent key of [key].
+  ///
+  /// Default value to [this] if the persistent storage returns null.
+  ///
   /// Usage: defaultStringListValue.globalPersist(key)
-  ///       `final watchedVar = <String>[].globalPersist(key)`
+  ///
+  /// ex.
+  ///
+  ///     final persistVar = <String>[].globalPersist(key);
   RxPersistStringList globalPersist(String key) {
     return RxPersistStringList(key, this);
   }
 }
 
-// End persistent section
+/// End of persistent section ///
 
 // /// Encode a number into a string
 // String numToString128(int value) {
