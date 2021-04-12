@@ -64,7 +64,7 @@
 
 <br>
 
-Flutter Mediator Persistence is a super easy state management package with built in persistence capability, using SharedPreference as persistent storage, [InheritedModel][] as the state management mechanism, and base on the works of [Flutter Mediator Lite][lite].
+Flutter Mediator Persistence is a super easy state management package with built in persistence capability, using SharedPreference as the persistent storage, [InheritedModel][] as the state management mechanism, and base on the works of [Flutter Mediator Lite][lite].
 
 <!--
 <table border="0" align="center">
@@ -93,7 +93,7 @@ Flutter Mediator Persistence is a super easy state management package with built
 - [Persistence](#persistence)
   - [`await initGlobalPersist()`](#await-initglobalpersist)
   - [`defaultVal.globalPersist('key')`](#defaultvalglobalpersistkey)
-  - [`initGlobal(widget)`](#initglobalwidget)
+  - [`initGlobal(child)`](#initglobalchild)
   - [`getPersistStore()`](#getpersiststore)
   - [`persistVar.remove()`](#persistvarremove)
   - [`persistVar.store(input)`](#persistvarstoreinput)
@@ -455,7 +455,7 @@ final locale = DefaultLocale.globalPersist('locale');
 final themeIdx = 1.globalPersist('themeIdx');
 ```
 
-### `initGlobal(widget)`
+### `initGlobal(child)`
 
 Initial the most common case `main()`,
 with the `[child]` widget, e.g.
@@ -464,7 +464,7 @@ with the `[child]` widget, e.g.
 await initGlobal(MyApp())
 ```
 
-is the equivalent to
+is equivalent to
 
 ```dart
 await initGlobalPersist();
@@ -486,7 +486,7 @@ Return the backend persistent storage, a `SharedPreferences` instance.
 ex.
 
 ```dart
-final prefs = getPersistStore();`
+final prefs = getPersistStore();
 ```
 
 ### `persistVar.remove()`
