@@ -16,8 +16,9 @@ class HomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text('You have pushed the button this many times:'),
-          //* Step3: Create a widget with `globalConsume` or `watchedVar.consume`
-          //* to register the watched variable to the host to rebuild it when updating.
+          //* Step3: Create a consume widget with
+          //* `globalConsume` or `watchedVar.consume` to register the
+          //* watched variable to the host to rebuild it when updating.
           globalConsume(
             () => Text(
               '${touchCount.value}',

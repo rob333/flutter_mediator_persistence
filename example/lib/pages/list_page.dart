@@ -14,8 +14,9 @@ class ListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('List Demo')),
-      //* Step3: Create a widget with `globalConsume` or `watchedVar.consume`
-      //* to register the watched variable to the host to rebuild it when updating.
+      //* Step3: Create a consume widget with
+      //* `globalConsume` or `watchedVar.consume` to register the
+      //* watched variable to the host to rebuild it when updating.
       body: globalConsume(
         () => GridView.builder(
           itemCount: data.value.length,

@@ -62,7 +62,7 @@ extension StringI18n on String {
   }
 
   /// String extension for i18n and `locale.consume` the widget
-  /// to register the widget for the state management.
+  /// to create consume widget for the state management.
   Widget ci18n(BuildContext context, {TextStyle? style}) {
     return locale.consume(
       () => Text(FlutterI18n.translate(context, this), style: style),

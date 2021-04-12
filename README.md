@@ -83,30 +83,29 @@ Flutter Mediator Persistence is a super easy state management package with built
 
 ## Table of Contents
 
-- [Flutter Mediator Persistence](#flutter-mediator-persistence)
-  - [Setting up](#setting-up)
-  - [Steps](#steps)
-    - [Case 1: Int](#case-1-int)
-    - [Case 2: List](#case-2-list)
-    - [Case 3: Locale setting with Built in Persistence](#case-3-locale-setting-with-built-in-persistence)
-    - [Case 4: Scrolling effect](#case-4-scrolling-effect)
-  - [Recap](#recap)
-  - [Persistence](#persistence)
-    - [`await initGlobalPersist()`](#await-initglobalpersist)
-    - [`defaultVal.globalPersist('key')`](#defaultvalglobalpersistkey)
-    - [`initGlobal(widget)`](#initglobalwidget)
-    - [`getPersistStore()`](#getpersiststore)
-    - [`persistVar.remove()`](#persistvarremove)
-    - [`persistVar.store(input)`](#persistvarstoreinput)
-  - [Global Get](#global-get)
-    - [Case 1: By `Type`](#case-1-by-type)
-    - [Case 2: By `tag`](#case-2-by-tag)
-  - [Global Broadcast](#global-broadcast)
-  - [Versions](#versions)
-  - [Example: Logins to a REST server](#example-logins-to-a-rest-server)
-  - [Flutter Widget of the Week: InheritedModel explained](#flutter-widget-of-the-week-inheritedmodel-explained)
-  - [Changelog](#changelog)
-  - [License](#license)
+- [Setting up](#setting-up)
+- [Steps](#steps)
+  - [Case 1: Int](#case-1-int)
+  - [Case 2: List](#case-2-list)
+  - [Case 3: Locale setting with Built in Persistence](#case-3-locale-setting-with-built-in-persistence)
+  - [Case 4: Scrolling effect](#case-4-scrolling-effect)
+- [Recap](#recap)
+- [Persistence](#persistence)
+  - [`await initGlobalPersist()`](#await-initglobalpersist)
+  - [`defaultVal.globalPersist('key')`](#defaultvalglobalpersistkey)
+  - [`initGlobal(widget)`](#initglobalwidget)
+  - [`getPersistStore()`](#getpersiststore)
+  - [`persistVar.remove()`](#persistvarremove)
+  - [`persistVar.store(input)`](#persistvarstoreinput)
+- [Global Get](#global-get)
+  - [Case 1: By `Type`](#case-1-by-type)
+  - [Case 2: By `tag`](#case-2-by-tag)
+- [Global Broadcast](#global-broadcast)
+- [Versions](#versions)
+- [Example: Logins to a REST server](#example-logins-to-a-rest-server)
+- [Flutter Widget of the Week: InheritedModel explained](#flutter-widget-of-the-week-inheritedmodel-explained)
+- [Changelog](#changelog)
+- [License](#license)
 
 <hr>
 
@@ -185,8 +184,9 @@ Scaffold(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
       const Text('You have pushed the button this many times:'),
-      //* Step3: Create a widget with `globalConsume` or `watchedVar.consume`
-      //* to register the watched variable to the host to rebuild it when updating.
+      //* Step3: Create a consume widget with
+      //* `globalConsume` or `watchedVar.consume` to register the
+      //* watched variable to the host to rebuild it when updating.
       globalConsume(
         () => Text(
           '${touchCount.value}',
@@ -227,8 +227,9 @@ Step 3: Create consume widget.
 ```dart
 return Scaffold(
   appBar: AppBar(title: const Text('List Demo')),
-  //* Step3: Create a widget with `globalConsume` or `watchedVar.consume`
-  //* to register the watched variable to the host to rebuild it when updating.
+  //* Step3: Create a consume widget with
+  //* `globalConsume` or `watchedVar.consume` to register the
+  //* watched variable to the host to rebuild it when updating.
   body: globalConsume(
     () => GridView.builder(
       itemCount: data.value.length,
@@ -295,7 +296,7 @@ localizationsDelegates: [
 ],
 ```
 
-Step 2-3: add assets in [pubspec.yaml][] and prepare locale files in the [folder][flutter_i18n]
+Step 2-3: Add assets in [pubspec.yaml][] and prepare locale files in the [folder][flutter_i18n]
 
 ```yaml
 flutter:
@@ -311,8 +312,9 @@ Step 3: Create consume widget in [example/lib/pages/locale_page.dart][].
 return SizedBox(
   child: Row(
     children: [
-      //* Step3: Create a widget with `globalConsume` or `watchedVar.consume`
-      //* to register the watched variable to the host to rebuild it when updating.
+      //* Step3: Create a consume widget with
+      //* `globalConsume` or `watchedVar.consume` to register the
+      //* watched variable to the host to rebuild it when updating.
       //* `watchedVar.consume()` is a helper function to
       //* `touch()` itself first and then `globalConsume`.
       locale.consume(() => Text('${'app.hello'.i18n(context)} ')),
@@ -358,8 +360,9 @@ Step 3: Create cousume widget.
 class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //* Step3: Create a widget with `globalConsume` or `watchedVar.consume`
-    //* to register the watched variable to the host to rebuild it when updating.
+    //* Step3: Create a consume widget with
+    //* `globalConsume` or `watchedVar.consume` to register the
+    //* watched variable to the host to rebuild it when updating.
     return globalConsume(
       () => Container(
         color: Colors.black
@@ -371,7 +374,7 @@ class CustomAppBar extends StatelessWidget {
 }
 ```
 
-Step 4: Initialize the initial offset and add an offset listener.
+Step 4: Initialize the initial offset and Add an offset change listener.
 
 ```dart
 class _ScrollPageState extends State<ScrollPage> {
@@ -405,8 +408,8 @@ class _ScrollPageState extends State<ScrollPage> {
 ///   bool: false.globalPersist('boolKey');
 ```
 
-- At step 3, create a widget and register it to the host to rebuild it when updating,
-  <br> use **`globalConsume(() => widget)`** **if the value of the watched variable is used inside the widget**;
+- At step 3, create a consume widget and register it to the host to rebuild it when updating,
+  <br> use **`globalConsume(() => widget)`** **if the value of the watched variable is used inside the consume widget**;
   <br>or use **`watchedVar.consume(() => widget)`** to `touch()` the watched variable itself first and then `globalConsume(() => widget)`.
 
 - At step 4, update to the `watchedVar.value` will notify the host to rebuild; or the underlying object would be a class, then use `watchedVar.ob.updateMethod(...)` to notify the host to rebuild. <br>**`watchedVar.ob = watchedVar.notify() and then return the underlying object`.**

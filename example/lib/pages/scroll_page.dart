@@ -102,8 +102,9 @@ class CustomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //* Step3: Create a widget with `globalConsume` or `watchedVar.consume`
-    //* to register the watched variable to the host to rebuild it when updating.
+    //* Step3: Create a consume widget with
+    //* `globalConsume` or `watchedVar.consume` to register the
+    //* watched variable to the host to rebuild it when updating.
     return globalConsume(
       () => Container(
         padding: const EdgeInsets.symmetric(
