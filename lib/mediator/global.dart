@@ -71,7 +71,7 @@ Rx globalGet<T>({Object? tag}) {
 ///
 /// If the value of the watched variable is not used inside the widget,
 /// then use `watchedVar.consume` to create the consume widget to notify
-/// the host to rebuild when updating.
+/// the host to rebuild when updating the watched variable.
 SubscriberAuto globalConsume(Widget Function() create, {Key? key}) {
   return SubscriberAuto(key: key, create: create);
 }
