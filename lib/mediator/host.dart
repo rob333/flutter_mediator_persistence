@@ -23,8 +23,8 @@ HashSet<Object> get globalFrameAspects => _globalFrameAspects;
 
 ///
 
-/// Class `Host` handles the registration of widget aspects.
-/// And rebuild widgets with aspects when updating.
+/// Class [Host] handles the registration of consume widget with [aspects,
+/// and rebuild consume widgets with aspects when updating.
 @immutable
 class Host extends StatefulWidget {
   const Host({
@@ -34,8 +34,8 @@ class Host extends StatefulWidget {
 
   final Widget child;
 
-  /// Register widget to the Host, and add aspects to the [regAspects]
-  /// return the [TModel]
+  /// Register the consume widget [context] to the [Host] with [aspects],
+  /// and add these [aspects] to [regAspects].
   static void register(
     BuildContext context, {
     Iterable<Object>? aspects,
@@ -64,7 +64,14 @@ class _HostState extends State<Host> {
   final Widget child;
 
   /// To `setState()` of the [Host] when any aspect publishs,
-  /// to rebuild the descendant widgets by aspects.
+  /// to rebuild the descendant widgets by [aspects].
+  ///
+  /// [aspects] could be:
+  ///
+  ///     null: broadcast to all the consume widget of this host
+  ///     Iterable<Object>: all the aspects in the iterable
+  ///     Rx variable: the aspects related with the Rx variableg
+  ///     aspect: a single aspect
   void _frameAspectListener([Object? aspects]) {
     setState(() {
       /// Add aspects into [_frameAspects]
@@ -112,8 +119,8 @@ class _HostState extends State<Host> {
   }
 }
 
-/// The [InheritedModel] subclass that is rebuilt by [_HostState].
-/// The aspect type is always  `Object`.
+/// An [InheritedModel] subclass that is rebuilt by [_HostState].
+/// Aspect type always is `Object`.
 class InheritedMediator extends InheritedWidget {
   /// Creates an inherited model that supports dependencies qualified by
   /// "aspects", i.e. a descendant widget can indicate that it should
@@ -213,7 +220,7 @@ class InheritedMediator extends InheritedWidget {
 }
 
 /// An [Element] that uses a [InheritedMediator] as its configuration.
-/// Aspect type is always `Object`.
+/// Aspect type always is `Object`.
 class InheritedMediatorElement extends InheritedElement {
   /// Creates an element that uses the given widget as its configuration.
   InheritedMediatorElement(InheritedMediator widget) : super(widget);

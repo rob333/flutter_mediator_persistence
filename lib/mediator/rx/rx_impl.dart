@@ -48,9 +48,11 @@ class RxImpl<T> {
 
   //* region static rx auto aspect section
   static int rxTagCounter = 0;
+
+  /// Return the next unique system tag.
   static int _nextRxTag() {
     assert(ifTagMaximum(rxTagCounter));
-    // return numToString128(rxTagCounter++); // As of v2.1.2+3 changes to `int` tag.
+    // return numToString128(rxTagCounter++); // As of Mediator v2.1.2+3 changes to `int` tag.
     return rxTagCounter++;
   }
 
@@ -74,7 +76,15 @@ class RxImpl<T> {
   }
   //! endregion
 
-  /// getter: Return the value of the underlying object.
+  /// Getter:
+  ///
+  /// Return the value of the underlying object.
+  ///
+  /// The value used inside the consume widget will cause the widget
+  /// to rebuild when updating; or use
+  ///
+  ///     watchedVar.consume(() => widget)
+  /// to `touch()` the watched variable itself first and then `globalConsume(() => widget)`.
   T get value {
     // if rx automatic aspect is enabled. (precede over state rx aspect)
     if (stateRxAutoAspectFlag == true) {
@@ -91,7 +101,16 @@ class RxImpl<T> {
     return _value;
   }
 
-  /// setter: Set the value of the underlying object.
+  /// Setter:
+  ///
+  /// Set the value of the underlying object.
+  ///
+  /// Update to the value will notify the host to rebuild;
+  /// or the underlying object would be a class, then use
+  ///
+  /// `watchedVar.ob.updateMethod(...)` to notify the host to rebuild.
+  ///
+  ///     watchedVar.ob = watchedVar.notify() and then return the underlying object
   set value(T value) {
     if (_value != value) {
       _value = value;
@@ -118,14 +137,14 @@ class RxImpl<T> {
     return _value;
   }
 
-  /// Touch to activate rx automatic aspect management.
+  /// Activate automatic aspect management for this watched variable.
   void touch() {
     // add the _tag to the rx automatic aspect list,
     // for later getRxAutoAspects() to register to host
     stateRxAutoAspects.addAll(rxAspects);
   }
 
-  /// Add an unique system `tag` to the Rx object.
+  /// Add an unique system `tag` to this Rx object.
   void _initRxTag() {
     final tag = _nextRxTag();
     // Add the tag to the Rx Aspects list.
@@ -134,7 +153,14 @@ class RxImpl<T> {
     globalAllAspects.add(tag);
   }
 
-  /// A helper function to `touch()` itself first and then `globalConsume`.
+  /// Create a consume widget and connect with the watched variable.
+  /// The consume widget will rebuild whenever the watched variable updates.
+  ///
+  /// e.g.
+  ///
+  ///     watchedVar.consume(() => widget)
+  /// is to `touch()` the watched variable itself first and then
+  /// `globalConsume(() => widget)`.
   Widget consume(Widget Function() create, {Key? key}) {
     final wrapFn = () {
       touch();
@@ -226,7 +252,7 @@ class Rx<T> extends RxImpl<T> {
   Rx(T initial) : super(initial);
 }
 
-/// Helper for all others type to Rx object.
+/// Extension for all others type to Rx object.
 extension RxExtension<T> on T {
   /// Returns a `Rx` instace with [this] `T` as the initial value.
   Rx<T> get rx => Rx<T>(this);

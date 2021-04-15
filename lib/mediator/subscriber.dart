@@ -4,10 +4,18 @@ import 'assert.dart';
 import 'host.dart';
 import 'rx/rx_impl.dart';
 
-/// A widget class for [globalConsumeAll()],/// to register them
+/// The consume widget class
+///
+/// for `globalConsumeAll()`, to register them
 /// to the host with all the aspects which has been registered.
 @immutable
 class Subscriber extends StatelessWidget {
+  /// Create a consume widget.
+  ///
+  /// [aspects] : register the aspects with the consume widget. This widget
+  /// will rebuild whenever any aspect in the [aspects] is notified.
+  ///
+  /// [create] : create a child widget of this consume widget.
   const Subscriber({
     Key? key,
     this.aspects,
@@ -41,9 +49,16 @@ class Subscriber extends StatelessWidget {
   }
 }
 
-/// A widget class, to register them to the host with aspects.
+/// The consume widget class with automatic aspect management.
 @immutable
 class SubscriberAuto extends StatelessWidget {
+  /// Create a consume widget.
+  ///
+  /// Register to the host to rebuild when any of the watched variable value
+  /// used inside this widget is updating; or use `watchedVar.consume` to
+  /// `touch()` the watched variable first.
+  ///
+  /// [create] : create a child widget of this consume widget.
   const SubscriberAuto({
     Key? key,
     required this.create,
