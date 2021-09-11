@@ -1,6 +1,10 @@
+## 1.0.2
+
+- Update dependences.
+
 ## 1.0.1
 
-- add `initGlobal()` to initial the most common case `main()`.
+- Add `initGlobal()` to initial the most common case `main()`.
 
 ## 1.0.0
 
