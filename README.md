@@ -83,29 +83,30 @@ Flutter Mediator Persistence is a super easy state management package with built
 
 ## Table of Contents
 
-- [Setting up](#setting-up)
-- [Steps](#steps)
-  - [Case 1: Int](#case-1-int)
-  - [Case 2: List](#case-2-list)
-  - [Case 3: Locale setting with Built in Persistence](#case-3-locale-setting-with-built-in-persistence)
-  - [Case 4: Scrolling effect](#case-4-scrolling-effect)
-- [Recap](#recap)
-- [Persistence](#persistence)
-  - [`await initGlobalPersist()`](#await-initglobalpersist)
-  - [`defaultVal.globalPersist('key')`](#defaultvalglobalpersistkey)
-  - [`initGlobal(child)`](#initglobalchild)
-  - [`getPersistStore()`](#getpersiststore)
-  - [`persistVar.remove()`](#persistvarremove)
-  - [`persistVar.store(input)`](#persistvarstoreinput)
-- [Global Get](#global-get)
-  - [Case 1: By `Type`](#case-1-by-type)
-  - [Case 2: By `tag`](#case-2-by-tag)
-- [Global Broadcast](#global-broadcast)
-- [Versions](#versions)
-- [Example: Logins to a REST server](#example-logins-to-a-rest-server)
-- [Flutter Widget of the Week: InheritedModel explained](#flutter-widget-of-the-week-inheritedmodel-explained)
-- [Changelog](#changelog)
-- [License](#license)
+- [Flutter Mediator Persistence](#flutter-mediator-persistence)
+  - [Setting up](#setting-up)
+  - [Steps](#steps)
+    - [Case 1: Int](#case-1-int)
+    - [Case 2: List](#case-2-list)
+    - [Case 3: Locale setting with Built in Persistence](#case-3-locale-setting-with-built-in-persistence)
+    - [Case 4: Scrolling effect](#case-4-scrolling-effect)
+  - [Recap](#recap)
+  - [Persistence](#persistence)
+    - [`await initGlobalPersist()`](#await-initglobalpersist)
+    - [`defaultVal.globalPersist('key')`](#defaultvalglobalpersistkey)
+    - [`initGlobal(child)`](#initglobalchild)
+    - [`getPersistStore()`](#getpersiststore)
+    - [`persistVar.remove()`](#persistvarremove)
+    - [`persistVar.store(input)`](#persistvarstoreinput)
+  - [Global Get](#global-get)
+    - [Case 1: By `Type`](#case-1-by-type)
+    - [Case 2: By `tag`](#case-2-by-tag)
+  - [Global Broadcast](#global-broadcast)
+  - [Versions](#versions)
+  - [Example: Logins to a REST server](#example-logins-to-a-rest-server)
+  - [Flutter Widget of the Week: InheritedModel explained](#flutter-widget-of-the-week-inheritedmodel-explained)
+  - [Changelog](#changelog)
+  - [License](#license)
 
 <hr>
 
@@ -115,7 +116,7 @@ Add the following dependency to pubspec.yaml of your flutter project:
 
 ```yaml
 dependencies:
-  flutter_mediator_persistence: "^1.0.1"
+  flutter_mediator_persistence: "^1.0.2"
 ```
 
 Import flutter_mediator_persistence in files that will be used:

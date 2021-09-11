@@ -191,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
   TextFormField buildPasswordFormField(BuildContext context) {
     return TextFormField(
       focusNode: passwordFocusNode,
-      style: TextStyle(color: Theme.of(context).accentColor),
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       keyboardType: TextInputType.text,
       onSaved: (input) => loginRequest.password = input,
       validator: (input) => passwordValidator(input),
@@ -235,9 +235,10 @@ class _LoginPageState extends State<LoginPage> {
       floatingLabelBehavior: FloatingLabelBehavior.always,
       enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).accentColor.withOpacity(0.2))),
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.2))),
       focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).accentColor)),
+          borderSide:
+              BorderSide(color: Theme.of(context).colorScheme.secondary)),
       prefixIcon: Icon(
         iconData,
         color: Theme.of(context).highlightColor,
@@ -252,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
       style: TextButton.styleFrom(
         padding: const EdgeInsets.all(10),
         minimumSize: const Size(80, 12),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         shape: const StadiumBorder(),
         // alignment: Alignment.centerLeft,
       ),
