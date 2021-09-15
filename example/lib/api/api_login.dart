@@ -37,6 +37,7 @@ class LoginRequest {
   }
 }
 
+// ignore: avoid_classes_with_only_static_members
 class APIService {
   static const host = 'reqres.in';
 
