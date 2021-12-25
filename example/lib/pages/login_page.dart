@@ -108,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const Spacer(),
                         GestureDetector(
+                          // ignore: todo
                           // TODO(xxx): implement 'ForgetPasswordPage'
                           onTap: () {},
                           child: 'login.forgotPassword'.ci18n(
