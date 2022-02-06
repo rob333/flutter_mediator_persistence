@@ -187,6 +187,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!input.contains('@')) {
       return 'login.invalidAccountError'.i18n(context);
     }
+    return null;
   }
 
   TextFormField buildPasswordFormField(BuildContext context) {
@@ -223,6 +224,7 @@ class _LoginPageState extends State<LoginPage> {
     if (input.length < 3) {
       return 'login.shortPasswordError'.i18n(context);
     }
+    return null;
   }
 
   InputDecoration formInputDecoration(
