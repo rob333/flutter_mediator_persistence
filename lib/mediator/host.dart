@@ -257,7 +257,8 @@ class InheritedMediatorElement extends InheritedElement {
         getDependencies(dependent) as HashSet<Object>?;
     if (dependencies == null) return;
     if (dependencies.isEmpty ||
-        widget.updateShouldNotifyDependent(oldWidget, dependencies))
+        widget.updateShouldNotifyDependent(oldWidget, dependencies)) {
       dependent.didChangeDependencies();
+    }
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter_mediator_persistence/mediator.dart';
 
 import '/api/api_login.dart';
 import '/var.dart';
-import 'components/ProgressHUD.dart';
+import 'components/progress.dart';
 
 class LoginPage extends StatefulWidget {
   @override

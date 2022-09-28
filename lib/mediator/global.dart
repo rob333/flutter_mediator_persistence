@@ -49,17 +49,19 @@ Rx<T> globalWatch<T>(T v, {Object? tag}) {
 Rx globalGet<T>({Object? tag}) {
   if (tag == null) {
     assert(() {
-      if (_globalWatchedVar[T] == null)
+      if (_globalWatchedVar[T] == null) {
         throw FlutterError(
             'Error: `globalGet` gets null. Type:$T does not exists.');
+      }
       return true;
     }());
     return _globalWatchedVar[T] as Rx<T>;
   }
   assert(() {
-    if (_globalWatchedVar[tag] == null)
+    if (_globalWatchedVar[tag] == null) {
       throw FlutterError(
           'Error: `globalGet` gets null. Tag:$tag does not exists.');
+    }
     return true;
   }());
   return _globalWatchedVar[tag] as Rx;
