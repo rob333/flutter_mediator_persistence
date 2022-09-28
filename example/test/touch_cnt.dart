@@ -50,7 +50,7 @@ class TouchCntPage extends StatelessWidget {
             globalConsume(
               () => Text(
                 '${touchCnt.value}',
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
           ],
@@ -125,7 +125,7 @@ class TouchCntPage extends StatelessWidget {
 //             ),
 //             Text(
 //               '$_counter',
-//               style: Theme.of(context).textTheme.headline4,
+//               style: Theme.of(context).textTheme.headlineMedium,
 //             ),
 //           ],
 //         ),

@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     'login.title'.ci18n(
                       context,
-                      style: Theme.of(context).textTheme.headline2,
+                      style: Theme.of(context).textTheme.displayMedium,
                     ),
                     const SizedBox(height: 20),
                     const Text('ID: eve.holt@reqres.in'),

@@ -19,7 +19,7 @@ class LocalePage extends StatelessWidget {
           const SizedBox(height: 50),
           Text(
             'Locale demo',
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 25),
           //* `globalConsume` the watched variable from `../main.dart`
