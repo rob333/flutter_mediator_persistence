@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mediator_persistence/mediator.dart';
 
 // ignore: avoid_relative_lib_imports
-import 'var.dart' show data, ListItem;
+import '../lib/var.dart' show data, ListItem;
 
 void main() {
   // for test to work with package that requires this line of code

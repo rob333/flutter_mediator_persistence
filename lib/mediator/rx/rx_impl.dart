@@ -162,10 +162,11 @@ class RxImpl<T> {
   /// is to `touch()` the watched variable itself first and then
   /// `globalConsume(() => widget)`.
   Widget consume(Widget Function() create, {Key? key}) {
-    final wrapFn = () {
+    wrapFn() {
       touch();
       return create();
-    };
+    }
+
     return globalConsume(wrapFn, key: key);
   }
 

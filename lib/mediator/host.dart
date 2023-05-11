@@ -55,7 +55,8 @@ class Host extends StatefulWidget {
   }
 
   @override
-  _HostState createState() => _HostState(child);
+  // ignore: no_logic_in_create_state
+  State<Host> createState() => _HostState(child);
 }
 
 class _HostState extends State<Host> {

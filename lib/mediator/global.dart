@@ -18,15 +18,11 @@ Rx<T> globalWatch<T>(T v, {Object? tag}) {
   if (tag == null) {
     if (!_globalWatchedVar.containsKey(T)) {
       _globalWatchedVar[T] = rx;
-      // assert(() {
-      //   print('Info: Global watched variable of Type: $T');
-      //   return true;
-      // }());
     }
     /*
     else {
       assert(() {
-        print('Info: Global watched variable of Type: $T already exists.');
+        print('Info: global watched variable of type: $T already exists.');
         print(
             'If the watched variable would be used across files, please use the [tag] parameter.');
         return true;
