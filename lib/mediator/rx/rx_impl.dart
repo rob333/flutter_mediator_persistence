@@ -98,7 +98,13 @@ class RxImpl<T> {
       }
     }
 
-    return _value;
+    if (_value is! Function) {
+      return _value;
+    }
+    // This is a computed mediator variable.
+    final fn = _value as Function;
+    final res = fn();
+    return res;
   }
 
   /// Setter:
