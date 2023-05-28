@@ -254,15 +254,24 @@ class RxImpl<T> {
 }
 
 /// Rx<T> class
-class Rx<T> extends RxImpl<T> {
+final class Rx<T> extends RxImpl<T> {
   /// Constructor: With `initial` as the initial value.
   Rx(T initial) : super(initial);
 }
 
 /// Extension for all others type to Rx object.
-extension RxExtension<T> on T {
+extension RxExt<T> on T {
   /// Returns a `Rx` instace with [this] `T` as the initial value.
   Rx<T> get rx => Rx<T>(this);
+}
+
+/// type alias
+typedef Signal<T> = Rx<T>;
+
+/// Extension for Signal type aliase.
+extension SignalExt<T> on T {
+  /// Returns a `Signal` type alias with [this] of type `T` as the initial value.
+  Signal<T> get signal => Signal<T>(this);
 }
 
 ///
@@ -351,7 +360,7 @@ class RxPersistBool extends RxPersistBase<bool> {
 }
 
 /// Extension for bool type to Rx persistent class.
-extension RxPersistBoolExtension on bool {
+extension RxPersistBoolExt on bool {
   /// Returns a `RxPersistBool`, with the persistent key of [key].
   ///
   /// Default value to [this] if the persistent storage returns null.
@@ -388,7 +397,7 @@ class RxPersistString extends RxPersistBase<String> {
 }
 
 /// Extension for String type to Rx persistent class.
-extension RxPersistStringExtension on String {
+extension RxPersistStringExt on String {
   /// Returns a `RxPersistString`, with the persistent key of [key].
   ///
   /// Default value to [this] if the persistent storage returns null.
@@ -425,7 +434,7 @@ class RxPersistInt extends RxPersistBase<int> {
 }
 
 /// Extension for int type to Rx persistent class.
-extension RxPersistIntExtension on int {
+extension RxPersistIntExt on int {
   /// Returns a `RxPersistInt`, with the persistent key of [key].
   ///
   /// Default value to [this] if the persistent storage returns null.
@@ -462,7 +471,7 @@ class RxPersistDouble extends RxPersistBase<double> {
 }
 
 /// Extension for double type to Rx persistent class.
-extension RxPersistDoubleExtension on double {
+extension RxPersistDoubleExt on double {
   /// Returns a `RxPersistDouble`, with the persistent key of [key].
   ///
   /// Default value to [this] if the persistent storage returns null.
@@ -522,7 +531,7 @@ class RxPersistStringList extends RxPersistBase<List<String>> {
 }
 
 /// Extension for List<String> type to Rx persistent class.
-extension RxPersistStringListExtension on List<String> {
+extension RxPersistStringListExt on List<String> {
   /// Returns a `RxPersistStringList`, with the persistent key of [key].
   ///
   /// Default value to [this] if the persistent storage returns null.
@@ -538,50 +547,3 @@ extension RxPersistStringListExtension on List<String> {
 }
 
 /// End of persistent section ///
-
-// /// Encode a number into a string
-// String numToString128(int value) {
-//   /// ascii code:
-//   /// 32: space /// 33: !  (first character except space)
-//   /// 48: 0
-//   /// 65: A  /// 90: Z
-//   /// 97: a  /// 122
-//   // const int charBase = 33;
-//   //'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!"#%&()*+,-./:;<=>?@[\\]^_`{|}~€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ';
-//   const charBase =
-//       '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!"#%&()*+,-./:;<=>?@[]^_`{|}~€‚ƒ„…†‡•–™¢£¤¥©®±µ¶º»¼½¾ÀÆÇÈÌÐÑÒ×ØÙÝÞßæç';
-//   assert(charBase.length >= 128, 'numToString128 const charBase length < 128');
-
-//   if (value == 0) {
-//     return '#0';
-//   }
-
-//   var res = '#';
-
-//   assert(value >= 0, 'numToString should provide positive value.');
-//   // if (value < 0) {
-//   //   value = -value;
-//   //   res += '-';
-//   // }
-
-//   final list = <String>[];
-//   while (value > 0) {
-//     /// 64 group
-//     // final remainder = value & 63;
-//     // value = value >> 6; // == divide by 64
-
-//     /// 128 group
-//     final remainder = value & 127;
-//     value = value >> 7; // == divide by 128
-//     /// num to char, base on charBase
-//     //final char = String.fromCharCode(remainder + charBase);
-//     final char = charBase[remainder];
-//     list.add(char);
-//   }
-
-//   for (var i = list.length - 1; i >= 0; i--) {
-//     res += list[i];
-//   }
-
-//   return res;
-// }
